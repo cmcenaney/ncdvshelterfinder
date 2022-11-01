@@ -2,6 +2,32 @@
     height: 100vh;
     }
 
+    .county-title{
+        text-transform: capitalize;
+    }
+
+    .dv-title {
+        font-weight: 500;
+        line-height: 14px;
+    }
+
+    a {
+        color: purple;
+    }
+
+    .info p {
+        margin: 0px;
+    }
+
+    
+
+    .info {
+        border: 1px solid black;
+        padding: 5px;
+        margin: 10px 0px;
+    }
+
+    
 
 
     .sidebar {

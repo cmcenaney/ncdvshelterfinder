@@ -7,8 +7,28 @@ import data from './assets/counties.geojson';
 import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-loader-syntax
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
 
+function tooltip(county, ttData) {
+    console.log(county)
+    console.log(ttData)
+
+    let html = `<h3 class="county-title">${county} County</h3>`
+
+    if (ttData) {
+    ttData.forEach((d) => {
+        if (d.link){
+        html += `<div class="info"><a href="http://${d.link}" target="_blank"><p class="dv-title">${d.name}</p></a>`
+        } else {
+            html += `<div class="info"><p class="dv-title">${d.name}</p>`
+        }
+        html += `<p class="phone">${d.phone}</p></div>`;
+    });
+}
+
+
+    return html;
+}
+
 async function gsheet() {
-    console.log(process.env)
     const SPREADSHEET_ID = process.env.REACT_APP_SPREADSHEET_ID;
     const CLIENT_EMAIL = process.env.REACT_APP_GOOGLE_CLIENT_EMAIL;
     const PRIVATE_KEY = process.env.REACT_APP_GOOGLE_SERVICE_PRIVATE_KEY;
@@ -25,18 +45,37 @@ async function gsheet() {
 
       const sheet = doc.sheetsByIndex[0];
 
-      const rows = await sheet.getRows(); 
-      console.log(rows);
+      const rows = await sheet.getRows();
+
+
 
       const d = {}
 
+      const p = []
+
       rows.forEach((row) => {
+        const l = {}
+        l.county = row.county.toLowerCase()
+        l.phone = row.phone.toLowerCase()
+        l.name = row.name
+        l.link = row.link
+
+        p.push(l)
+
         d[row.county.toLowerCase()] = {
-            'phone': row.phone
+            'phone': row.phone,
+            'name': row.name,
+            'link': row.link
         }
       });
 
-      return d;
+      const y = p.reduce(function (r, a) {
+        r[a.county] = r[a.county] || [];
+        r[a.county].push(a);
+        return r;
+    }, Object.create(null));
+
+      return y;
 }
 
 export default function App() {
@@ -127,13 +166,12 @@ export default function App() {
 
             const info = gsheet();
             info.then((d) => {
-                console.log(d)
             
                 
             map.current.on('click', 'counties', (e) => {
                 new mapboxgl.Popup()
                 .setLngLat(e.lngLat)
-                .setHTML(`<div><p>${e.features[0].properties.CO_NAME}</p><p>${d[e.features[0].properties.CO_NAME.toLowerCase()]?.phone}</p></div>`)
+                .setHTML(tooltip(e.features[0].properties.CO_NAME.toLowerCase(), d[e.features[0].properties.CO_NAME.toLowerCase()]))
                 .addTo(map.current);
             });
 
