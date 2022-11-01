@@ -1,5 +1,6 @@
 {
     "name": "use-mapbox-gl-js-with-react",
+    "homepage": "https://cmcenaney.github.io/ncdvshelterfinder",
     "version": "0.1.0",
     "private": true,
     "dependencies": {
@@ -15,6 +16,8 @@
         "use-google-sheets": "^2.0.0"
     },
     "scripts": {
+        "predeploy": "npm run build",
+        "deploy": "gh-pages -d build",
         "start": "react-scripts start",
         "build": "react-scripts build"
     },
@@ -28,5 +31,8 @@
         "not ie 11"
     ],
     "author": "Mapbox",
-    "license": "MIT"
+    "license": "MIT",
+    "devDependencies": {
+        "gh-pages": "^4.0.0"
+    }
 }
