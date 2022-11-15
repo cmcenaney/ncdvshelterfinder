@@ -56,7 +56,7 @@ async function gsheet() {
       rows.forEach((row) => {
         const l = {}
         l.county = row.county.toLowerCase()
-        l.phone = row.phone.toLowerCase()
+        l.phone = row.phone
         l.name = row.name
         l.link = row.link
 
