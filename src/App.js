@@ -95,6 +95,7 @@ export default function App() {
           style: 'mapbox://styles/mapbox/light-v10',
           center: [lng, lat],
           zoom: zoom,
+          
         });
 
         map.current.addControl(
@@ -102,6 +103,7 @@ export default function App() {
             accessToken: mapboxgl.accessToken,
             mapboxgl: mapboxgl,
             zoom: zoom,
+            bbox: [-84.32178200052,33.85116926668266,-75.45981513195132,36.5881334409244],
             })
             );
         
