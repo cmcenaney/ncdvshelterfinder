@@ -8,8 +8,6 @@ import mapboxgl from '!mapbox-gl'; // eslint-disable-line import/no-webpack-load
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_API_KEY;
 
 function tooltip(county, ttData) {
-    console.log(county)
-    console.log(ttData)
 
     let html = `<h3 class="county-title">${county} County</h3>`
 
@@ -104,8 +102,21 @@ export default function App() {
             mapboxgl: mapboxgl,
             zoom: zoom,
             bbox: [-84.32178200052,33.85116926668266,-75.45981513195132,36.5881334409244],
-            })
-            );
+
+            }).on('result', function(results) {
+                const county = results.result.context[2].text.toLowerCase().replace(' county', '');
+                const coord = {lng: results.result.center[0], lat: results.result.center[1]}
+                console.log(coord)
+                const info = gsheet();
+                info.then((d) => {
+                    new mapboxgl.Popup()
+                    .setLngLat(coord)
+                    .setHTML(tooltip(county, d[county]))
+                    .addTo(map.current);
+                });
+                
+             })
+        );
         
         map.current.addControl(
             new mapboxgl.GeolocateControl({
@@ -171,6 +182,7 @@ export default function App() {
             
                 
             map.current.on('click', 'counties', (e) => {
+                console.log(e.lngLat)
                 new mapboxgl.Popup()
                 .setLngLat(e.lngLat)
                 .setHTML(tooltip(e.features[0].properties.CO_NAME.toLowerCase(), d[e.features[0].properties.CO_NAME.toLowerCase()]))
