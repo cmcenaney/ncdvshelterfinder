@@ -14,7 +14,7 @@ function tooltip(county, ttData) {
     if (ttData) {
     ttData.forEach((d) => {
         if (d.link){
-        html += `<div class="info"><a href="http://${d.link}" target="_blank"><p class="dv-title">${d.name}</p></a>`
+        html += `<div class="info"><a href="${d.link}" target="_blank"><p class="dv-title">${d.name}</p></a>`
         } else {
             html += `<div class="info"><p class="dv-title">${d.name}</p>`
         }
