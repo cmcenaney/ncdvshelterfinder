@@ -82,7 +82,11 @@ export default function App() {
     const map = useRef(null);
     const [lng, setLng] = useState(-80);
     const [lat, setLat] = useState(35.4);
-    const [zoom, setZoom] = useState(6);
+    const [zoom, setZoom] = useState(6.5);
+    const [countyName, setCountyName] = useState('');
+    const [name, setName] = useState('');
+    const [phone, setPhone] = useState('');
+    const [link, setLink] = useState('');
 
     useEffect(() => {
         if (map.current) return; // initialize map only once
@@ -198,10 +202,16 @@ export default function App() {
                 
             map.current.on('click', 'counties', (e) => {
                 console.log(e.lngLat)
-                new mapboxgl.Popup()
-                .setLngLat(e.lngLat)
-                .setHTML(tooltip(e.features[0].properties.CO_NAME.toLowerCase(), d[e.features[0].properties.CO_NAME.toLowerCase()]))
-                .addTo(map.current);
+                const p = d[e.features[0].properties.CO_NAME.toLowerCase()][0];
+                setCountyName(e.features[0].properties.CO_NAME.toLowerCase());
+                setName(p.name)
+                setLink(p.link)
+                setPhone(p.phone)
+                // new mapboxgl.Popup()
+                
+                // .setLngLat(e.lngLat)
+                // .setHTML(tooltip(e.features[0].properties.CO_NAME.toLowerCase(), d[e.features[0].properties.CO_NAME.toLowerCase()]))
+                // .addTo(map.current);
             });
 
         });
@@ -243,6 +253,11 @@ export default function App() {
       return (
         <div>
             <div ref={mapContainer} className="map-container" />
+            <div className="sidebar">
+                <p class="countyname">{countyName} County</p>
+                <a href={link} target="_blank"><p>{name}</p></a>
+                <p dangerouslySetInnerHTML={{__html: phone}} />
+            </div>
         </div>
         );
 }
