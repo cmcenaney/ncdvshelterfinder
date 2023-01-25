@@ -252,12 +252,23 @@ export default function App() {
 
       return (
         <div>
-            <div ref={mapContainer} className="map-container" />
+            <div class="header">
+            <div class="title">Title here</div>
+            <div class="description">Description here</div>
+            </div>
+            
+            
+            {countyName && (
             <div className="sidebar">
-                <p class="countyname">{countyName} County</p>
+                <div class="countyname">
+                    <p>{countyName} County</p>
+                </div>
                 <a href={link} target="_blank"><p>{name}</p></a>
                 <p dangerouslySetInnerHTML={{__html: phone}} />
             </div>
+            )}
+
+<div ref={mapContainer} className="map-container" />
         </div>
         );
 }

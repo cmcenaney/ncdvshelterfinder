@@ -1,6 +1,11 @@
 .map-container {
-    height: 100vh;
+    height: 90vh;
+    width: 90vw;
+    margin: 0 auto;
+    border: 1px solid black;
     }
+
+   
 
     .county-title{
         text-transform: capitalize;
@@ -11,9 +16,9 @@
         line-height: 14px;
     }
 
-    a {
+    /* a {
         color: purple;
-    }
+    } */
 
     .info p {
         margin: 0px;
@@ -36,13 +41,40 @@
         font-family: sans-serif;
         z-index: 1;
         position: absolute;
-        top: 0;
-        left: 0;
+        left: 5vw;
         margin: 12px;
-        border-radius: 4px;
         border: 1px solid black;
+
+
+    }
+
+    .sidebar p {
+        margin-bottom: 0px;
     }
 
     .countyname {
         text-transform: capitalize;
+        font-weight: 600;
+    }
+
+    .countyname p {
+        margin-top: 0px;
+    }
+
+
+    .header {
+        text-align: center;
+        margin: 30px 0px;
+    }
+
+    .title {
+        font-family: sans-serif;
+        font-size: 28px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .description {
+        font-family: sans-serif;
+        font-size: 20px;
     }
