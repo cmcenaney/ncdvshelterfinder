@@ -179,6 +179,19 @@ export default function App() {
                 'country-label'
             );
 
+            map.current.addLayer({
+                'id': 'poi-labels',
+                'type': 'symbol',
+                'source': 'counties',
+                'layout': {
+                    'text-field': ['get', 'CO_NAME'],
+                    'text-size': 10
+                    // 'text-variable-anchor': ['top', 'bottom', 'left', 'right'],
+                    // 'text-radial-offset': 0.5,
+                    // 'text-justify': 'auto',
+                }
+                });
+
             const info = gsheet();
             info.then((d) => {
             
