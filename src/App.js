@@ -114,10 +114,14 @@ export default function App() {
                 console.log(coord)
                 const info = gsheet();
                 info.then((d) => {
-                    new mapboxgl.Popup()
-                    .setLngLat(coord)
-                    .setHTML(tooltip(county, d[county]))
-                    .addTo(map.current);
+                    setCountyName(county)
+                    setName(d[county][0].name)
+                    setLink(d[county][0].link)
+                    setPhone(d[county][0].phone)
+                    // new mapboxgl.Popup()
+                    // .setLngLat(coord)
+                    // .setHTML(tooltip(county, d[county]))
+                    // .addTo(map.current);
                 });
                 
              })
