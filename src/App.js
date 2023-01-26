@@ -419,7 +419,7 @@ export default function App() {
                       </div>
                       <a href={link} target="_blank"><p>{name}</p></a>
                       <p dangerouslySetInnerHTML={{ __html: phone }} />
-                      <p>Availabe</p>
+                      <p>Availability</p>
                       <input type="checkbox" onChange={handleNo}></input> No
                       <br></br>
                       <input type="checkbox" onChange={handleMaybe}></input> Maybe
