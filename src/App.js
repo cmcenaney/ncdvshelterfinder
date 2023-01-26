@@ -243,7 +243,7 @@ export default function App() {
                         "fill-outline-color": "#000",
                         // 'fill-color': matchExpression,
                         // "fill-color": "orange",
-                        "fill-color": matchExpression,
+                        "fill-color": savedData ? matchExpression : 'white',
                         // "fill-color": matchExpression,
                     },
                     source: 'counties'
