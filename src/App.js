@@ -87,6 +87,13 @@ export default function App() {
     const [name, setName] = useState('');
     const [phone, setPhone] = useState('');
     const [link, setLink] = useState('');
+    const [no, setNo] = useState(false);
+    const [maybe, setMaybe] = useState(false);
+    const [savedData, setSavedData] = useState(() => {
+        // getting stored value
+        const saved = JSON.parse(localStorage.getItem('savedData'));
+        return saved;
+      });
 
     useEffect(() => {
         if (map.current) return; // initialize map only once
@@ -151,6 +158,8 @@ export default function App() {
         });
 
         map.current.on('load', () => {
+            
+
             map.current.resize();
             /* Add the data to your map as a layer */
             map.current.addSource('counties', {
@@ -158,6 +167,67 @@ export default function App() {
                 data: data,
                 'generateId': true
               });
+
+            
+              const matchExpression = ['match', ['get', 'CO_NAME']];
+
+              for (const key in savedData) {
+               
+                const cname = key.split('_')[0].toUpperCase();
+                const type = key.split('_')[1];
+                
+                // const color = type === 'no' && savedData[key] ? "blue": "orange";
+                
+
+                let color = "black";
+
+                if (savedData[key]){
+                    if (type === 'no') {
+                        color = "orange";
+                    } else {
+                        color = "blue"
+                    }
+
+                    console.log(cname)
+                    console.log(type)
+                    console.log(savedData[key])
+                    console.log(color)
+
+                    matchExpression.push(cname, color);
+                }
+
+               
+
+                // matchExpression.push(cname, color);
+                
+                // if (!matchExpression.contains(cname)){
+                //     matchExpression.push(cname, 'blue');
+                // }
+                
+            }
+            matchExpression.push('rgba(0, 0, 0, 0)');
+
+            console.log(matchExpression)
+
+            //   for (const key in savedData) {
+            //     console.log(savedData[key])
+            //     const cname = key.split('_')[0].toUpperCase();
+                
+            //       map.current.setFeatureState(
+            //     {
+            //       source: 'counties',
+            //       id: cname,
+            //     },
+            //     {
+            //       no: savedData[key]
+            //     }
+            //   );
+                
+            //   }
+
+            
+            
+            
 
             map.current.addLayer(
                 {
@@ -171,12 +241,53 @@ export default function App() {
                             0.2
                             ],
                         "fill-outline-color": "#000",
-                        "fill-color": "#000"
+                        // 'fill-color': matchExpression,
+                        // "fill-color": "orange",
+                        "fill-color": matchExpression,
+                        // "fill-color": matchExpression,
                     },
                     source: 'counties'
                 },
                 'country-label'
             );
+
+            // const cList = [];
+
+            
+
+            // console.log(data)
+
+            // map.current.setPaintProperty(
+            //     'counties', 
+            //     'fill-color',
+            //     ['match', ['get', 'no'], true, "orange" , "blue"]
+            //   );
+
+            //   map.setFeatureState(
+            //     {
+            //       source: 'counties',
+            //       sourceLayer: 'counties',
+            //       id: data['item.STATE_ID'].feature_id
+            //     },
+            //     {
+            //       no: item.no
+            //     }
+            //   );
+
+            // map.setPaintProperty('myLayer', 'fill-color', [
+            //     'match',
+            //     ['get', 'CO_NAME'],
+            //     layer.value, '#fbb03b',
+            //     /* other */ '#ccc'
+            //   ]);
+            
+           
+
+            // map.current.setPaintProperty(
+            //     'counties', 
+            //     'fill-color',
+            //     ['match', ['get', 'CO_NAME'], 'CHATHAM', "orange" , "blue"]
+            //   );
         
             map.current.addLayer(
                 {
@@ -205,9 +316,17 @@ export default function App() {
             
                 
             map.current.on('click', 'counties', (e) => {
+                
                 console.log(e.lngLat)
                 const p = d[e.features[0].properties.CO_NAME.toLowerCase()][0];
-                setCountyName(e.features[0].properties.CO_NAME.toLowerCase());
+                const l = e.features[0].properties.CO_NAME.toLowerCase();
+                // const n = JSON.parse(localStorage.getItem(`${l}_no`));
+                // const m = JSON.parse(localStorage.getItem(`${l}_maybe`));
+                
+                // setNo(n)
+                // setMaybe(m)
+
+                setCountyName(l);
                 setName(p.name)
                 setLink(p.link)
                 setPhone(p.phone)
@@ -254,6 +373,37 @@ export default function App() {
           });
       });
 
+      const handleNo = (e) => {
+        const obk = JSON.parse(localStorage.getItem('savedData')) || {};
+        console.log(obk)
+        const n = `${countyName}_no`;
+        const m = `${countyName}_maybe`;
+        obk[n] = e.target.checked;
+        obk[m] = !e.target.checked;
+
+        localStorage.setItem('savedData', JSON.stringify(obk));
+
+        
+
+        
+      }
+
+      const checkNo = () => {
+        console.log('yo')
+        return true;
+        // return localStorage.getItem(`${countyName}_no`);
+      }
+
+      const handleMaybe = (e) => {
+        const obk = JSON.parse(localStorage.getItem('savedData')) || {};
+        const n = `${countyName}_no`;
+        const m = `${countyName}_maybe`;
+        obk[n] = !e.target.checked;
+        obk[m] = e.target.checked;
+
+        localStorage.setItem('savedData', JSON.stringify(obk));
+      }
+
       return (
         <div>
             <div class="header">
@@ -263,13 +413,17 @@ export default function App() {
             
             
             {countyName && (
-            <div className="sidebar">
-                <div class="countyname">
-                    <p>{countyName} County</p>
-                </div>
-                <a href={link} target="_blank"><p>{name}</p></a>
-                <p dangerouslySetInnerHTML={{__html: phone}} />
-            </div>
+            <><div className="sidebar">
+                      <div class="countyname">
+                          <p>{countyName} County</p>
+                      </div>
+                      <a href={link} target="_blank"><p>{name}</p></a>
+                      <p dangerouslySetInnerHTML={{ __html: phone }} />
+                      <input type="checkbox" onChange={handleNo}></input> no
+                      <input type="checkbox" onChange={handleMaybe}></input> maybe
+                  </div>
+                  
+                  </>
             )}
 
 <div ref={mapContainer} className="map-container" />
