@@ -183,9 +183,9 @@ export default function App() {
 
                 if (savedData[key]){
                     if (type === 'no') {
-                        color = "orange";
+                        color = "#A9A9A9";
                     } else {
-                        color = "blue"
+                        color = "#AFE1AF"
                     }
 
                     console.log(cname)
@@ -237,8 +237,8 @@ export default function App() {
                         'fill-opacity': [
                             'case',
                             ['boolean', ['feature-state', 'hover'], false],
-                            0.4,
-                            0.2
+                            0.9,
+                            0.7
                             ],
                         "fill-outline-color": "#000",
                         // 'fill-color': matchExpression,
@@ -419,8 +419,10 @@ export default function App() {
                       </div>
                       <a href={link} target="_blank"><p>{name}</p></a>
                       <p dangerouslySetInnerHTML={{ __html: phone }} />
-                      <input type="checkbox" onChange={handleNo}></input> no
-                      <input type="checkbox" onChange={handleMaybe}></input> maybe
+                      <p>Availabe</p>
+                      <input type="checkbox" onChange={handleNo}></input> No
+                      <br></br>
+                      <input type="checkbox" onChange={handleMaybe}></input> Maybe
                   </div>
                   
                   </>
