@@ -27,6 +27,24 @@ function tooltip(county, ttData) {
     return html;
 }
 
+function createMatchExpression(savedData) {
+    const matchExpression = ['match', ['get', 'CO_NAME']];
+
+    for (const key in savedData) {
+        const gray = "#A9A9A9";
+        const green = "#AFE1AF"
+        const countyName = key.split('_')[0].toUpperCase();
+        const type = key.split('_')[1];
+        const color = type == 'no' && savedData[key] ? gray : green;
+
+        if (!matchExpression.includes(countyName)){
+            matchExpression.push(countyName, color);
+        }
+    }
+    matchExpression.push('white');
+    return matchExpression;
+}
+
 async function gsheet() {
     const SPREADSHEET_ID = process.env.REACT_APP_SPREADSHEET_ID;
     const CLIENT_EMAIL = process.env.REACT_APP_GOOGLE_CLIENT_EMAIL;
@@ -118,7 +136,7 @@ export default function App() {
             }).on('result', function(results) {
                 const county = results.result.context[2].text.toLowerCase().replace(' county', '');
                 const coord = {lng: results.result.center[0], lat: results.result.center[1]}
-                console.log(coord)
+
                 const info = gsheet();
                 info.then((d) => {
                     setCountyName(county)
@@ -168,62 +186,14 @@ export default function App() {
                 'generateId': true
               });
 
+             
+
             
-              const matchExpression = ['match', ['get', 'CO_NAME']];
+              
 
-              for (const key in savedData) {
-               
-                const cname = key.split('_')[0].toUpperCase();
-                const type = key.split('_')[1];
-                
-                // const color = type === 'no' && savedData[key] ? "blue": "orange";
-                
-
-                let color = "black";
-
-                if (savedData[key]){
-                    if (type === 'no') {
-                        color = "#A9A9A9";
-                    } else {
-                        color = "#AFE1AF"
-                    }
-
-                    console.log(cname)
-                    console.log(type)
-                    console.log(savedData[key])
-                    console.log(color)
-
-                    matchExpression.push(cname, color);
-                }
-
-               
-
-                // matchExpression.push(cname, color);
-                
-                // if (!matchExpression.contains(cname)){
-                //     matchExpression.push(cname, 'blue');
-                // }
-                
-            }
-            matchExpression.push('rgba(0, 0, 0, 0)');
-
-            console.log(matchExpression)
-
-            //   for (const key in savedData) {
-            //     console.log(savedData[key])
-            //     const cname = key.split('_')[0].toUpperCase();
-                
-            //       map.current.setFeatureState(
-            //     {
-            //       source: 'counties',
-            //       id: cname,
-            //     },
-            //     {
-            //       no: savedData[key]
-            //     }
-            //   );
-                
-            //   }
+          
+            
+            
 
             
             
@@ -241,10 +211,7 @@ export default function App() {
                             0.7
                             ],
                         "fill-outline-color": "#000",
-                        // 'fill-color': matchExpression,
-                        // "fill-color": "orange",
-                        "fill-color": savedData ? matchExpression : 'white',
-                        // "fill-color": matchExpression,
+                        "fill-color": savedData ?  createMatchExpression(savedData) : 'white',
                     },
                     source: 'counties'
                 },
@@ -375,7 +342,7 @@ export default function App() {
 
       const handleNo = (e) => {
         const obk = JSON.parse(localStorage.getItem('savedData')) || {};
-        console.log(obk)
+
         const n = `${countyName}_no`;
         const m = `${countyName}_maybe`;
         obk[n] = e.target.checked;
@@ -383,14 +350,22 @@ export default function App() {
 
         localStorage.setItem('savedData', JSON.stringify(obk));
 
+        const me = createMatchExpression(obk)
+        
+        // matchExpression[0].splice(-1, 0, countyName.toUpperCase(), "#A9A9A9")
         
 
+        map.current.setPaintProperty(
+                'counties', 
+                'fill-color',
+                me
+              );
         
       }
 
       const checkNo = () => {
         console.log('yo')
-        return true;
+        
         // return localStorage.getItem(`${countyName}_no`);
       }
 
@@ -401,20 +376,39 @@ export default function App() {
         obk[n] = !e.target.checked;
         obk[m] = e.target.checked;
 
+        console.log(obk)
+
         localStorage.setItem('savedData', JSON.stringify(obk));
+
+        const me = createMatchExpression(obk)
+
+        map.current.setPaintProperty(
+            'counties', 
+            'fill-color',
+            me
+          );
+
+        // matchExpression[0].splice(-1, 0, countyName.toUpperCase(),"#AFE1AF")
+        
+
+        // map.current.setPaintProperty(
+        //         'counties', 
+        //         'fill-color',
+        //         matchExpression[0]
+        //       );
       }
 
       return (
         <div>
-            <div class="header">
-            <div class="title">Title here</div>
-            <div class="description">Description here</div>
+            <div className="header">
+            <div className="title">Title here</div>
+            <div className="description">Description here</div>
             </div>
             
             
             {countyName && (
             <><div className="sidebar">
-                      <div class="countyname">
+                      <div className="countyname">
                           <p>{countyName} County</p>
                       </div>
                       <a href={link} target="_blank"><p>{name}</p></a>
